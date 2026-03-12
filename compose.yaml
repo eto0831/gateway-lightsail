@@ -3,10 +3,19 @@ services:
     image: nginx:1.25-alpine
     ports:
       - "80:80"
+      - "443:443"
     volumes:
+      # 既存のnginx設定
       - ./default.conf:/etc/nginx/conf.d/default.conf:ro
+
+      # Let's Encrypt 証明書（read-only）
+      - ./letsencrypt:/etc/letsencrypt:ro
+
+      # webroot（将来 webroot方式で更新したい時用）
+      - ./www:/var/www/certbot:ro
     networks:
       - gw-net
+    restart: unless-stopped
 
 networks:
   gw-net:
